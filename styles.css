@@ -1,0 +1,999 @@
+/* === C2 Box wireframe stage === */
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&family=JetBrains+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&display=swap');
+
+html, body { margin: 0; padding: 0; background: #f0eee9; font-family: 'Geist', system-ui, sans-serif; color: #2a251f; }
+* { box-sizing: border-box; }
+
+/* Clip horizontal overflow at the document root, not on .pp — putting
+   overflow-x:hidden on a sticky ancestor (.pp) silently breaks
+   position:sticky on its descendants because the implied overflow-y
+   makes that ancestor the scroll container (which never scrolls,
+   since it has no height cap). Clip at html/body and let the document
+   scroll so the navbar's sticky actually pins to the viewport. */
+html, body {
+  overflow-x: hidden;
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* old Edge / IE */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0; height: 0;         /* Chrome / Safari / new Edge */
+  display: none;
+}
+
+/* ---------- Screen frame (128×64 OLED) ----------
+   We render at native 128×64 px, then scale the wrapper.
+   Background = OLED off pixels (very dark). Foreground = ON pixels (warm white).
+*/
+.c2-stage {
+  position: relative;
+  display: inline-block;
+  padding: 18px;
+  background: #1b1814;
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px #2c2823, inset 0 1px 0 rgba(255,255,255,.06),
+              0 6px 14px rgba(0,0,0,.18);
+}
+.c2-stage::after {
+  content: '';
+  position: absolute; inset: 6px;
+  border-radius: 10px;
+  border: 1px solid #0c0a07;
+  pointer-events: none;
+}
+.c2-bezel {
+  position: relative;
+  background: #050403;
+  border-radius: 4px;
+  padding: 6px;
+  box-shadow: inset 0 0 0 1px #000, inset 0 0 12px rgba(0,0,0,.8);
+}
+
+/* The actual pixel canvas */
+.c2-screen {
+  position: relative;
+  width: 128px;
+  height: 64px;
+  background: #050403;
+  color: #e6efff;          /* OLED white-ish blue */
+  font-family: 'Silkscreen', monospace;
+  font-size: 8px;
+  line-height: 8px;
+  overflow: hidden;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
+}
+
+/* Scale wrapper so it's legible. transform:scale keeps inner coords in px. */
+.c2-scale {
+  display: inline-block;
+  transform-origin: top left;
+}
+.c2-scale > .c2-stage { display: block; }
+
+/* SVG icons inside the screen render with this color by default */
+.c2-screen svg { color: #e6efff; display: block; }
+
+/* Inverted (selected) row / chip / badge */
+.c2-inv { background: #e6efff; color: #050403; }
+.c2-inv svg { color: #050403; }
+
+/* Hairline dividers — 1px in display coordinates */
+.c2-hr { background: #e6efff; height: 1px; opacity: .6; }
+.c2-hr-strong { background: #e6efff; height: 1px; }
+
+/* tiny utility shorthands */
+.c2-row { display: flex; align-items: center; gap: 2px; }
+.c2-col { display: flex; flex-direction: column; }
+.c2-abs { position: absolute; }
+.c2-mono { font-family: 'Silkscreen', monospace; }
+.c2-tiny { font-size: 6px; line-height: 6px; }
+.c2-big { font-family: 'VT323', monospace; font-size: 22px; line-height: 22px; letter-spacing: -1px; }
+.c2-huge { font-family: 'VT323', monospace; font-size: 30px; line-height: 30px; letter-spacing: -1px; }
+
+/* ---------- Page chrome around screens ---------- */
+.frame-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(40,30,20,.7);
+  letter-spacing: .02em;
+  margin-top: 6px;
+  white-space: nowrap;
+}
+.frame-caption .num {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: #2a251f; color: #f5efe2;
+  text-align: center; line-height: 18px;
+  font-size: 10px;
+  margin-right: 6px;
+  vertical-align: -3px;
+}
+.frame-strip {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+  position: relative;
+}
+.frame-arrow {
+  align-self: center;
+  margin-top: 14px;
+  color: rgba(40,30,20,.4);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.frame-arrow .lbl { font-size: 9px; opacity: .9; }
+
+/* Direction header inside an artboard */
+.dir-head {
+  display: flex; flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.dir-head .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #c96442;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.dir-head h2 {
+  font-family: 'Geist', sans-serif;
+  font-size: 22px; line-height: 1.05;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+.dir-head p {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.45;
+  color: rgba(40,30,20,.7);
+  margin: 0;
+  max-width: 64ch;
+}
+.dir-head .rule {
+  margin-top: 4px;
+  display: inline-flex; flex-wrap: wrap; gap: 6px 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(40,30,20,.75);
+}
+.dir-head .rule kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  background: #2a251f; color: #f5efe2;
+  border-radius: 3px;
+  padding: 1px 5px;
+  margin-right: 4px;
+}
+
+/* Section subtitle in the canvas */
+.dc-section-tagline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(40,30,20,.6);
+  max-width: 80ch;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* button glyph chip */
+.btn-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #2a251f; color: #f5efe2;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+.btn-chip.outline { background: transparent; color: #2a251f; box-shadow: inset 0 0 0 1px #2a251f; }
+
+/* =========================================================================
+   Product page
+   Reuses the C2-stage OLED, btn-chip, frame-caption from above. Layout is
+   a normal scrolling document; no design-canvas wrapper.
+   ========================================================================= */
+
+.pp {
+  max-width: 100%;
+  /* Reserve room at the top for the position:fixed navbar so the hero
+     doesn't slide underneath it on first paint. --pp-nav-h is updated
+     by the @media block below to match the smaller mobile nav height. */
+  --pp-nav-h: 74px;
+  padding-top: var(--pp-nav-h);
+}
+/* Kill the iOS Safari tap-highlight wash anywhere inside the product
+   page. Per-element suppression (e.g. on .pp-emu-btn) doesn't help when
+   the highlight gets painted on an ancestor or sibling — applying it
+   here covers every tappable element in one go. */
+.pp, .pp * { -webkit-tap-highlight-color: transparent; }
+
+/* ---------- Nav ----------
+   Fixed (not sticky) so it pins to the viewport regardless of any
+   ancestor that creates a stacking/scroll context (backdrop-filter,
+   overflow-x clipping, transform, etc. — all of which silently break
+   position:sticky on descendants). z-index sits above section content
+   but below dialogs/modals if we ever add them. */
+.pp-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 48px;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(240, 238, 233, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(40, 30, 20, 0.06);
+}
+.pp-logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  color: #2a251f;
+}
+.pp-logo-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  background: #2a251f; color: #f5efe2;
+  border-radius: 6px;
+}
+.pp-logo-text {
+  font-family: 'Geist', sans-serif;
+  font-size: 16px; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.pp-logo-text em {
+  font-style: normal; opacity: 0.55; font-weight: 500;
+  margin-left: 2px;
+}
+.pp-nav-links {
+  display: flex; align-items: center; gap: 28px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.pp-nav-links a {
+  color: rgba(40, 30, 20, 0.75);
+  text-decoration: none;
+  transition: color .15s;
+}
+.pp-nav-links a:hover { color: #2a251f; }
+.pp-nav-links .pp-nav-cta {
+  background: #2a251f; color: #f5efe2;
+  padding: 8px 14px; border-radius: 6px;
+  font-weight: 500;
+}
+.pp-nav-links .pp-nav-cta:hover { background: #1a1612; color: #f5efe2; }
+
+/* ---------- Eyebrow ---------- */
+.pp-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: #c96442;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 18px;
+}
+.pp-eyebrow-n {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #c96442; color: #f5efe2;
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+/* ---------- Hero ---------- */
+.pp-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 96px 64px 120px;
+  max-width: 1480px;
+  margin: 0 auto;
+}
+.pp-hero-text { max-width: 640px; }
+.pp-h1 {
+  font-family: 'Geist', sans-serif;
+  font-size: 84px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  color: #2a251f;
+  margin: 0 0 28px;
+  display: flex; flex-direction: column;
+  gap: 8px;
+}
+.pp-h1-line1 {
+  font-style: italic;
+  font-weight: 500;
+  color: #c96442;
+  font-size: 0.62em;
+  letter-spacing: -0.02em;
+}
+.pp-h1-line2 { display: block; }
+.pp-lede {
+  font-family: 'Geist', sans-serif;
+  font-size: 19px;
+  line-height: 1.55;
+  color: rgba(40, 30, 20, 0.78);
+  margin: 0 0 36px;
+  max-width: 52ch;
+}
+.pp-cta {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 28px;
+}
+.pp-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 13px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform .12s, box-shadow .12s, background .15s, color .15s;
+}
+.pp-btn-primary {
+  background: #2a251f; color: #f5efe2;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .15), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.pp-btn-primary:hover {
+  background: #1a1612;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+}
+.pp-btn-ghost {
+  color: #2a251f;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(40, 30, 20, 0.25);
+}
+.pp-btn-ghost:hover {
+  background: rgba(40, 30, 20, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(40, 30, 20, 0.45);
+}
+.pp-btn-xl { padding: 16px 28px; font-size: 16px; }
+.pp-hero-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(40, 30, 20, 0.55);
+  display: flex; flex-wrap: wrap; gap: 8px;
+  letter-spacing: 0.01em;
+}
+.pp-hero-meta b { color: rgba(40, 30, 20, 0.85); font-weight: 600; }
+
+.pp-hero-screen {
+  display: flex; flex-direction: column; align-items: center;
+  position: relative;
+  min-width: 0;
+}
+/* Hero wraps the Emulator. The screen scale (--hero-k) is set here so
+   the emulator's screen reads it via inheritance — Emulator handles the
+   layout/sizing for its own children. */
+.pp-hero-screen-inner {
+  --hero-k: 3;
+  position: relative;
+  transform: rotate(-1.5deg);
+  filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .22));
+}
+@media (max-width: 1280px) { .pp-hero-screen-inner { --hero-k: 2.8; } }
+@media (max-width: 1100px) { .pp-hero-screen-inner { --hero-k: 3.4; } }
+@media (max-width: 640px)  { .pp-hero-screen-inner { --hero-k: 2.2; } }
+@media (max-width: 460px)  { .pp-hero-screen-inner { --hero-k: 1.8; } }
+
+/* ---------- Sections ---------- */
+.pp-section {
+  padding: 110px 64px;
+  max-width: 1480px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(40, 30, 20, 0.08);
+}
+.pp-section-head {
+  max-width: 720px;
+  margin-bottom: 56px;
+}
+.pp-h2 {
+  font-family: 'Geist', sans-serif;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  font-weight: 600;
+  color: #2a251f;
+  margin: 0 0 18px;
+}
+.pp-h2-xl {
+  font-size: 64px;
+  line-height: 1.02;
+}
+.pp-faint { color: rgba(40, 30, 20, 0.42); font-weight: 500; }
+.pp-sub {
+  font-family: 'Geist', sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(40, 30, 20, 0.72);
+  margin: 0;
+  max-width: 64ch;
+}
+.pp-sub .btn-chip {
+  vertical-align: 1px;
+}
+/* Desktop / mobile copy swap. Same 800 px threshold as the Monitor
+   grid → scroll-snap carousel break, so the prompt matches the UI
+   actually presented at that width. */
+.pp-sub-mobile  { display: none; }
+.pp-sub-desktop { display: inline; }
+@media (max-width: 800px) {
+  .pp-sub-desktop { display: none; }
+  .pp-sub-mobile  { display: inline; }
+}
+
+/* ---------- Monitor grid ----------
+   3 × 2 grid on desktop. Hover a card to reveal an explainer below
+   the label. On mobile (≤ 800 px) the grid collapses to a single
+   column, the explainer is always visible, and each card fades up
+   as it enters the viewport. */
+.pp-mon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px 32px;
+  justify-items: center;
+  align-items: start;
+}
+.pp-mon-card {
+  --mon-k: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  max-width: calc(176px * var(--mon-k));
+}
+.pp-mon-card-screen {
+  position: relative;
+  width: calc(176px * var(--mon-k));
+  height: calc(112px * var(--mon-k));
+  /* The c2-stage inside is display:inline-block. If text-align cascades
+     in as center (the mobile override puts text-align:center on the
+     card), the inline-block layout box shifts off the left edge, and
+     the scale(top-left) transform then paints the visual that far off
+     to the right. Force text-align here so the c2-stage always hugs
+     the container's left edge. */
+  text-align: left;
+  /* margin: auto pins this to horizontal center inside its flex/grid
+     parent — belt and braces. Mobile Safari sometimes falls back to
+     'safe' centering when a flex item is wider than its container
+     and parks it at the start; explicit auto margins keep it centered
+     regardless. */
+  margin-left: auto;
+  margin-right: auto;
+}
+.pp-mon-card-screen > .c2-stage {
+  display: inline-block;
+  transform: scale(var(--mon-k));
+  transform-origin: top left;
+}
+.pp-mon-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.pp-mon-card-meta .frame-caption { margin-top: 0; }
+.pp-mon-card-desc {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(40, 30, 20, 0.6);
+  max-width: 36ch;
+  /* Desktop hover-reveal: starts collapsed below the caption and slides
+     upward into place. The box itself stays put — only the explainer
+     moves. Mobile overrides below show it permanently. */
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: opacity .2s ease, max-height .3s ease, transform .25s cubic-bezier(.2, .7, .3, 1);
+}
+.pp-mon-card:hover .pp-mon-card-desc {
+  opacity: 1;
+  max-height: 96px;
+  transform: translateY(0);
+}
+
+/* Generic screen card still used by the Tools section (passthrough,
+   bind, RFD config screens stacked under their explainers). The screen
+   uses the same CSS-variable scaling pattern as .pp-mon-card-screen so
+   the container actually reserves the painted size — otherwise the
+   transform overflows the column on narrow viewports. */
+.pp-screencard {
+  display: flex;
+  flex-direction: column;
+}
+.pp-screencard .frame-caption { margin-top: 12px; }
+.pp-screencard-screen {
+  --tc-k: 2.6;
+  position: relative;
+  width: calc(176px * var(--tc-k));
+  height: calc(112px * var(--tc-k));
+  text-align: left;
+}
+.pp-screencard-screen > .c2-stage {
+  display: inline-block;
+  transform: scale(var(--tc-k));
+  transform-origin: top left;
+}
+
+/* ----- Emulator ---------------------------------------------------------
+   Real screen, real buttons. Click L / R to walk the ring; press and
+   hold either button to enter its overlay. Same CSS-scale trick as the
+   hero so layout reserves the visual size. */
+.pp-emu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+  /* No text selection / iOS long-press menu / Android selection callout
+     anywhere in the emulator. A hold on L or R has to read as a hold,
+     not "the user is trying to copy text from a button label." */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.pp-emu-screen {
+  position: relative;
+  width: calc(176px * var(--hero-k, 3));
+  height: calc(112px * var(--hero-k, 3));
+}
+.pp-emu-screen > .c2-stage {
+  display: inline-block;
+  transform: scale(var(--hero-k, 3));
+  transform-origin: top left;
+}
+/* Per-icon click overlay. Hit-boxes are absolutely positioned at the
+   exact native coordinates of each page-strip icon (set via inline
+   style on each tab), so the hover tint sits only on the icon — not
+   the full column. The container is pointer-events:none so the rest of
+   the OLED stays click-through. */
+.pp-emu-screen-tabs {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.pp-emu-screen-tab {
+  position: absolute;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  pointer-events: auto;
+  transition: background .12s;
+}
+.pp-emu-screen-tab:hover {
+  background: rgba(230, 239, 255, 0.22);
+}
+.pp-emu-screen-tab:focus-visible {
+  outline: 1px solid rgba(230, 239, 255, 0.7);
+  outline-offset: 0;
+}
+.pp-emu-screen-tab.is-active {
+  cursor: default;
+}
+.pp-emu-screen-tab.is-active:hover {
+  background: transparent;
+}
+.pp-emu-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.pp-emu-btn {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #3a342c 0%, #1d1813 100%);
+  border: 1px solid #0c0a07;
+  color: #f5efe2;
+  cursor: pointer;
+  box-shadow:
+    0 5px 0 #0a0806,
+    0 8px 14px rgba(0, 0, 0, .22),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
+  transition: transform .08s, box-shadow .08s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: inherit;
+  /* touch-action: none — block all the browser's default touch
+     gestures on the button so a long press is captured by our hold
+     detector, not interpreted as a context-menu trigger or a scroll. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  /* Suppress every default-button chrome path Mobile Safari might
+     paint over our round button: native button appearance, the focus
+     ring (we only want focus-visible for keyboard), and a square
+     focus-on-tap outline. Without these, tapping the button on iOS
+     shows a square highlight on top of the round shape. */
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+.pp-emu-btn:focus,
+.pp-emu-btn:focus-within {
+  outline: none;
+  background: linear-gradient(180deg, #3a342c 0%, #1d1813 100%);
+}
+.pp-emu-btn:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 2px 0 #0a0806,
+    0 3px 6px rgba(0, 0, 0, .2),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.pp-emu-btn:focus-visible {
+  outline: 2px solid #c96442;
+  outline-offset: 4px;
+}
+.pp-emu-btn-key {
+  font-family: 'Silkscreen', monospace;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: .04em;
+}
+.pp-emu-btn-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7.5px;
+  letter-spacing: .06em;
+  color: rgba(245, 239, 226, .55);
+  margin-top: 1px;
+}
+/* Button sizing only — screen scale is driven by --hero-k inherited
+   from the hero ancestor (see .pp-hero-screen-inner breakpoints). */
+@media (max-width: 700px) {
+  .pp-emu-btn { width: 60px; height: 60px; }
+  .pp-emu-btn-key { font-size: 18px; }
+  .pp-emu-btn-sub { display: none; }
+  .pp-emu-controls { gap: 18px; }
+}
+@media (max-width: 480px) {
+  .pp-emu-btn { width: 52px; height: 52px; }
+  .pp-emu-btn-key { font-size: 16px; }
+}
+
+/* ---------- Tools (dark) ---------- */
+.pp-section-dark {
+  background: #1b1814;
+  color: #f0eee9;
+  max-width: 100%;
+  border-top: 0;
+  padding: 110px 64px;
+}
+.pp-section-dark .pp-section-head { margin: 0 auto 56px; max-width: 1480px; }
+.pp-section-dark .pp-h2 { color: #f5efe2; }
+.pp-section-dark .pp-eyebrow { color: #e8a48a; }
+.pp-section-dark .pp-eyebrow-n { background: #c96442; color: #2a251f; }
+.pp-sub-dark { color: rgba(245, 239, 226, 0.65); }
+.pp-tools {
+  max-width: 1480px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.pp-tool {
+  display: flex; flex-direction: column;
+  gap: 18px;
+}
+.pp-tool .pp-screencard { align-items: flex-start; }
+/* Tools screencards scale fluidly so 3-across always fits the viewport.
+   --card-w solves for "viewport minus padding minus gaps, divided by 3"
+   and clamps to a comfortable min/max. The inner .c2-stage transform
+   derives its scale from --card-w by dividing lengths (px / px = a
+   unitless number), so width and scale stay locked — no breakpoints
+   needed to keep the visual the right size for its box. The grid gap
+   shrinks alongside the cards for the same reason. */
+.pp-tool .pp-screencard-screen {
+  --card-w: clamp(220px, calc((100vw - 260px) / 3), 460px);
+  width: var(--card-w);
+  height: calc(var(--card-w) * 112 / 176);
+}
+.pp-tool .pp-screencard-screen > .c2-stage {
+  transform: scale(calc(var(--card-w) / 176px));
+}
+.pp-tools { gap: clamp(20px, 3vw, 56px); }
+.pp-tool .frame-caption { color: rgba(245, 239, 226, 0.55); }
+.pp-tool .frame-caption .num { background: #f0eee9; color: #2a251f; }
+.pp-tool-h {
+  font-family: 'Geist', sans-serif;
+  font-size: 22px; font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 8px 0 0;
+  color: #f5efe2;
+}
+.pp-tool-p {
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(245, 239, 226, 0.65);
+  margin: 0;
+  max-width: 38ch;
+}
+
+/* ---------- Principles ---------- */
+.pp-principles {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  border-top: 1px solid rgba(40, 30, 20, 0.1);
+}
+.pp-principle {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 28px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(40, 30, 20, 0.1);
+  align-items: baseline;
+}
+.pp-principle-kbd {
+  display: flex; align-items: center; gap: 8px;
+}
+.pp-principle-kbd .btn-chip {
+  font-size: 11px;
+  padding: 4px 9px;
+}
+.pp-principle-plus {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(40, 30, 20, 0.4);
+}
+.pp-principle-title {
+  font-family: 'Geist', sans-serif;
+  font-size: 17px; font-weight: 600;
+  color: #2a251f;
+  margin-bottom: 2px;
+}
+.pp-principle-body {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: rgba(40, 30, 20, 0.65);
+  line-height: 1.5;
+}
+
+/* ---------- Specs ---------- */
+.pp-section-specs { padding-bottom: 110px; }
+.pp-specs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+.pp-spec {
+  border-top: 1px solid rgba(40, 30, 20, 0.18);
+  padding: 14px 0 0;
+  margin-bottom: 22px;
+}
+.pp-spec-k {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(40, 30, 20, 0.5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.pp-spec-v {
+  font-family: 'Geist', sans-serif;
+  font-size: 17px;
+  color: #2a251f;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+/* ---------- Final CTA ---------- */
+.pp-order {
+  background: #2a251f;
+  color: #f5efe2;
+  max-width: 100%;
+  margin: 0;
+  border-top: 0;
+  padding: 140px 64px;
+  text-align: center;
+}
+.pp-order-inner {
+  max-width: 880px;
+  margin: 0 auto;
+}
+.pp-order .pp-eyebrow { color: #e8a48a; justify-content: center; }
+.pp-order .pp-h2 { color: #f5efe2; }
+.pp-order .pp-faint { color: rgba(245, 239, 226, 0.45); }
+.pp-order .pp-cta { justify-content: center; margin-top: 36px; margin-bottom: 22px; }
+.pp-order .pp-btn-primary { background: #c96442; color: #f5efe2; }
+.pp-order .pp-btn-primary:hover { background: #d97757; }
+.pp-order .pp-btn-ghost {
+  color: #f5efe2;
+  box-shadow: inset 0 0 0 1px rgba(245, 239, 226, 0.3);
+}
+.pp-order .pp-btn-ghost:hover {
+  background: rgba(245, 239, 226, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(245, 239, 226, 0.5);
+}
+.pp-fine {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: rgba(245, 239, 226, 0.45);
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Footer ---------- */
+.pp-footer {
+  background: #1b1814;
+  color: rgba(245, 239, 226, 0.5);
+  padding: 36px 64px;
+}
+.pp-footer .pp-logo { color: #f5efe2; }
+.pp-footer-row {
+  display: flex; align-items: center; justify-content: center;
+  max-width: 1480px;
+  margin: 0 auto 16px;
+}
+.pp-footer-links {
+  display: flex; gap: 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
+.pp-footer-links a {
+  color: rgba(245, 239, 226, 0.55);
+  text-decoration: none;
+  transition: color .15s;
+}
+.pp-footer-links a:hover { color: #f5efe2; }
+.pp-footer-fine {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(245, 239, 226, 0.3);
+  max-width: 1480px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(245, 239, 226, 0.08);
+  padding-top: 16px;
+  text-align: center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1280px) {
+  .pp-mon-card { --mon-k: 1.9; }
+}
+@media (max-width: 1100px) {
+  .pp-hero {
+    grid-template-columns: 1fr;
+    gap: 64px;
+    padding: 72px 32px 96px;
+  }
+  .pp-h1 { font-size: 64px; }
+  .pp-h2 { font-size: 36px; }
+  .pp-h2-xl { font-size: 48px; }
+  .pp-section, .pp-section-dark, .pp-order, .pp-footer { padding-left: 32px; padding-right: 32px; }
+  .pp-nav { padding: 18px 32px; }
+  .pp { --pp-nav-h: 66px; }
+  .pp-mon-grid { grid-template-columns: repeat(2, 1fr); gap: 64px 28px; }
+  .pp-mon-card { --mon-k: 2.2; }
+  .pp-specs { grid-template-columns: 1fr; }
+  /* In the single-column collapse the three .pp-specs-col wrappers
+     stop being meaningful groupings — without this, the 40 px row gap
+     between them paints as two blank bands inside the Specs list.
+     display:contents promotes the 12 Spec items to be direct grid
+     children, and row-gap drops to 0 so the per-Spec margin-bottom +
+     border-top is the only thing setting their rhythm (uniform). */
+  .pp-specs { row-gap: 0; }
+  .pp-specs-col { display: contents; }
+}
+/* Mobile / narrow tablet: single-column carousel. Each card takes ~85vh
+   so only one is meaningfully visible at a time. The card currently
+   crossing the middle of the viewport (.is-focus, set by useInView)
+   sits at full opacity and natural scale; the others dim and shrink
+   slightly so the eye stays on the active one. Gentle scroll-snap so
+   it lands cleanly. */
+@media (max-width: 800px) {
+  html { scroll-snap-type: y proximity; }
+
+  .pp-mon-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+    justify-items: center;
+  }
+  .pp-mon-card {
+    /* sized to fit the typical phone content area (viewport - 64 px
+       section padding). Pushed down further at smaller breakpoints.
+       min-height controls the gap between cards in the scroll-snap
+       carousel — bigger = more breathing room, smaller = tighter
+       stack. 46vh keeps each card the dominant element on screen
+       without leaving a large empty band above/below it. */
+    --mon-k: 2.0;
+    min-height: 46vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    scroll-snap-align: center;
+    opacity: 0.3;
+    transform: scale(0.94);
+    transition:
+      opacity .5s cubic-bezier(.2, .7, .3, 1),
+      transform .5s cubic-bezier(.2, .7, .3, 1);
+  }
+  .pp-mon-card.is-focus {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .pp-mon-card.is-focus .pp-mon-card-screen {
+    filter: drop-shadow(0 18px 32px rgba(0, 0, 0, .2));
+  }
+  .pp-mon-card-meta {
+    align-items: center;
+    text-align: center;
+  }
+  .pp-mon-card-desc {
+    opacity: 1;
+    max-height: none;
+    transform: none;
+    transition: none;
+    font-size: 13px;
+    max-width: 32ch;
+  }
+  /* Tools collapse to a single column at the mobile break. The clamp
+     formula for --card-w switches to a single-column footprint
+     (subtract padding only, no gap × 2) so the card grows to fill
+     the available width instead of staying at its narrow 3-up size.
+     Centering is applied here so the desktop 3-up stays left-aligned. */
+  .pp-tools { grid-template-columns: 1fr; gap: 56px; }
+  .pp-tool .pp-screencard { align-items: center; }
+  .pp-tool .pp-screencard-screen {
+    --card-w: clamp(220px, calc(100vw - 64px), 460px);
+  }
+  .pp-tool { text-align: center; }
+  .pp-tool-h, .pp-tool-p { align-self: center; }
+}
+/* Mobile nav: only the Buy Now CTA — the section anchors aren't useful
+   on phones where the user is scrolling top-to-bottom anyway. The CTA
+   itself also hides while the hero Buy Now is still on screen (React
+   adds .is-hidden-mobile while heroCtaInView is true) so we never paint
+   two competing CTAs in the viewport at the same time. */
+@media (max-width: 800px) {
+  .pp-nav-links a:not(.pp-nav-cta) { display: none; }
+  .pp-nav-links .pp-nav-cta {
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  .pp-nav-links .pp-nav-cta.is-hidden-mobile {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+  }
+}
+@media (max-width: 640px) {
+  .pp-h1 { font-size: 48px; }
+  .pp-h1-line1 { font-size: 0.58em; }
+  .pp-h2 { font-size: 28px; }
+  .pp-h2-xl { font-size: 36px; }
+  .pp-nav-links { gap: 14px; font-size: 12px; }
+  .pp-nav-links .pp-nav-cta { padding: 6px 10px; }
+  .pp-principle { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 500px) {
+  .pp-mon-card { --mon-k: 1.8; }
+}
+@media (max-width: 420px) {
+  .pp-mon-card { --mon-k: 1.6; }
+}
+@media (max-width: 360px) {
+  .pp-mon-card { --mon-k: 1.5; }
+}
+/* Respect users who've asked for less motion: skip the slide, keep the fade. */
+@media (prefers-reduced-motion: reduce) {
+  .pp-mon-card { transition: opacity .3s ease !important; transform: none !important; }
+  .pp-mon-card.is-visible { transform: none !important; }
+}

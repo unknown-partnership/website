@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>MissionWeaver GCS — At last. The ground station has been figured out.</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="styles.css" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- The marketing page only uses the OLED primitives + icons + the live
+     emulator/sections in index.jsx. The design-canvas + flow-*.jsx files
+     are for the separate design canvas and were costing ~3k lines of JSX
+     to Babel-compile on every page load for nothing. -->
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="c2-screen.jsx"></script>
+<script type="text/babel" src="index.jsx"></script>
+</body>
+</html>
