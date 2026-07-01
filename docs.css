@@ -1,0 +1,391 @@
+/* Anchor jumps land below the fixed navbar, and glide instead of snap. */
+html { scroll-behavior: smooth; }
+/* styles.css sets overflow-x:hidden on html AND body. `hidden` on body turns
+   it into a scroll container that never actually scrolls, which defeats
+   position:sticky on the chapter rail (it pins to body instead of the
+   viewport and just scrolls away). Releasing body's overflow-x makes html
+   (still overflow-x:hidden, the real viewport scroller) the sticky container,
+   so the rail pins as intended. html keeps clipping, so no horizontal
+   scrollbar appears. Scoped here, so the landing page is unaffected. */
+body { overflow-x: visible; }
+/* styles.css turns on y scroll-snap at ≤800px for the landing carousel.
+   The docs page is a long prose document, so keep it free-scrolling. */
+@media (max-width: 800px) { html { scroll-snap-type: none; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* =========================================================================
+   Documentation page (docs.html)
+   Layered on top of styles.css; reuses the landing page's chrome (.pp-nav,
+   .pp-logo, .pp-btn, .pp-eyebrow, .pp-footer) and its palette:
+     ink #2a251f / #1a1612 · cream #f5efe2 · paper #f0eee9
+     accent #c96442 · accent-light #e8a48a · danger #b04a3a · ok #4a7c4e
+     OLED frame #1b1814 · OLED glass #050403 · OLED pixel #e6efff
+   The body content is a normal scrolling document with a sticky chapter
+   rail on the left and a prose column on the right.
+   ========================================================================= */
+
+/* ---------- Doc hero ---------- */
+.doc-hero {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 72px 64px 48px;
+}
+.doc-hero .pp-h1 {
+  font-size: 68px;
+  margin-bottom: 20px;
+}
+.doc-hero .pp-lede { margin-bottom: 28px; }
+.doc-hero .pp-cta { margin-bottom: 22px; }
+.doc-hero .pp-hero-meta { color: rgba(40, 30, 20, 0.55); }
+
+/* Download button gets the terracotta treatment (matches the order CTA). */
+.pp-btn-accent {
+  background: #c96442; color: #f5efe2;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, .15), inset 0 1px 0 rgba(255, 255, 255, .1);
+}
+.pp-btn-accent:hover {
+  background: #d97757;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(201, 100, 66, .28);
+}
+
+/* ---------- Two-column layout: sticky chapter rail + prose ---------- */
+.doc-layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 64px 40px;
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+
+/* Chapter rail: sticks below the fixed navbar as you scroll. */
+.doc-toc {
+  position: sticky;
+  top: calc(var(--pp-nav-h) + 28px);
+  align-self: start;
+  max-height: calc(100vh - var(--pp-nav-h) - 56px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.doc-toc::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.doc-toc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c96442;
+  margin: 0 0 14px;
+}
+.doc-toc ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+}
+.doc-toc li { margin: 0; }
+.doc-toc a {
+  display: flex;
+  gap: 10px;
+  padding: 6px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.35;
+  color: rgba(40, 30, 20, 0.7);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  margin-left: -14px;
+  transition: color .15s, border-color .15s;
+}
+.doc-toc a::before {
+  counter-increment: toc;
+  content: counter(toc, decimal-leading-zero);
+  color: rgba(40, 30, 20, 0.38);
+  font-variant-numeric: tabular-nums;
+}
+.doc-toc a:hover { color: #2a251f; }
+.doc-toc a.is-active {
+  color: #2a251f;
+  border-left-color: #c96442;
+}
+.doc-toc a.is-active::before { color: #c96442; }
+
+/* ---------- Prose column ---------- */
+.doc-main { min-width: 0; }
+.doc-chapter { scroll-margin-top: calc(var(--pp-nav-h) + 24px); }
+.doc-chapter + .doc-chapter {
+  margin-top: 64px;
+  padding-top: 56px;
+  border-top: 1px solid rgba(40, 30, 20, 0.1);
+}
+.doc-chapter-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #c96442;
+  margin: 0 0 10px;
+}
+.doc-h2 {
+  font-family: 'Geist', sans-serif;
+  font-size: 34px;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: #2a251f;
+  margin: 0 0 22px;
+}
+.doc-h3 {
+  font-family: 'Geist', sans-serif;
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  color: #2a251f;
+  margin: 38px 0 14px;
+  scroll-margin-top: calc(var(--pp-nav-h) + 24px);
+}
+.doc-main p {
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  line-height: 1.62;
+  color: rgba(40, 30, 20, 0.82);
+  margin: 0 0 16px;
+  max-width: 68ch;
+}
+.doc-main ul, .doc-main ol {
+  font-family: 'Geist', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(40, 30, 20, 0.82);
+  max-width: 68ch;
+  margin: 0 0 18px;
+  padding-left: 24px;
+}
+.doc-main li { margin: 0 0 8px; }
+.doc-main li::marker { color: rgba(40, 30, 20, 0.4); }
+.doc-main strong { font-weight: 600; color: #2a251f; }
+.doc-main em {
+  font-style: normal;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.92em;
+  color: #a6512f;
+}
+.doc-main a {
+  color: #c96442;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 100, 66, 0.35);
+  transition: border-color .15s, color .15s;
+}
+.doc-main a:hover { color: #a6512f; border-bottom-color: #a6512f; }
+.doc-main code, .doc-main kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  background: rgba(40, 30, 20, 0.07);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ---------- Callouts (note / warning / danger) ---------- */
+.doc-callout {
+  display: flex;
+  gap: 14px;
+  margin: 22px 0;
+  padding: 16px 18px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  border-left-width: 3px;
+  max-width: 68ch;
+}
+.doc-callout p { margin: 0; font-size: 15px; }
+.doc-callout p + p { margin-top: 8px; }
+.doc-callout-icon { flex: 0 0 auto; margin-top: 1px; }
+.doc-callout-body { min-width: 0; }
+.doc-callout-tag {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.doc-note {
+  background: rgba(40, 30, 20, 0.045);
+  border-color: rgba(40, 30, 20, 0.14);
+  border-left-color: #7c766c;
+}
+.doc-note .doc-callout-tag { color: #6b655b; }
+.doc-note .doc-callout-icon { color: #6b655b; }
+.doc-warning {
+  background: rgba(201, 100, 66, 0.08);
+  border-color: rgba(201, 100, 66, 0.22);
+  border-left-color: #c96442;
+}
+.doc-warning .doc-callout-tag { color: #a6512f; }
+.doc-warning .doc-callout-icon { color: #c96442; }
+.doc-danger {
+  background: rgba(176, 74, 58, 0.09);
+  border-color: rgba(176, 74, 58, 0.28);
+  border-left-color: #b04a3a;
+}
+.doc-danger .doc-callout-tag { color: #b04a3a; }
+.doc-danger .doc-callout-icon { color: #b04a3a; }
+
+/* ---------- Screenshot framing (OLED renders) ----------
+   Every screen render sits on a dark device frame that echoes the
+   .c2-stage bezel used on the landing page. */
+.doc-shot {
+  display: inline-block;
+  background: #1b1814;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow:
+    inset 0 0 0 1px #2c2823,
+    inset 0 1px 0 rgba(255, 255, 255, .06),
+    0 6px 16px rgba(0, 0, 0, .16);
+}
+.doc-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px #000;
+}
+.doc-figure {
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.doc-figure .doc-shot { width: min(440px, 100%); }
+.doc-figure figcaption,
+.doc-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(40, 30, 20, 0.6);
+  margin-top: 12px;
+  max-width: 60ch;
+}
+
+/* Step: screen render beside the instruction it illustrates. */
+.doc-step {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 26px;
+  align-items: center;
+  margin: 22px 0;
+}
+.doc-step .doc-shot { width: 100%; }
+.doc-step-body p:last-child,
+.doc-step-body ol:last-child,
+.doc-step-body ul:last-child { margin-bottom: 0; }
+
+/* Monitor page rows read the same as a step but the render leads. */
+.doc-pagerow { align-items: center; }
+
+/* Screen sequence: a horizontal strip of small framed screens with labels
+   (used for the boot sequence). Scrolls sideways on narrow viewports. */
+.doc-seq-wrap { margin: 24px 0; }
+.doc-seq {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+.doc-seq-item {
+  flex: 0 0 auto;
+  width: 168px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.doc-seq-item .doc-shot { width: 100%; padding: 8px; }
+.doc-seq-item .doc-seq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(40, 30, 20, 0.62);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.doc-seq-label .num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #2a251f; color: #f5efe2;
+  font-size: 9px; flex: 0 0 auto;
+}
+
+/* ---------- Gesture table (Two-Button Interface) ---------- */
+.doc-table-wrap { overflow-x: auto; margin: 22px 0; max-width: 68ch; }
+.doc-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: 'Geist', sans-serif;
+  font-size: 15px;
+}
+.doc-table th, .doc-table td {
+  text-align: left;
+  padding: 11px 14px;
+  border: 1px solid rgba(40, 30, 20, 0.14);
+  vertical-align: top;
+}
+.doc-table thead th {
+  background: #2a251f;
+  color: #f5efe2;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+}
+.doc-table tbody tr:nth-child(odd) { background: rgba(40, 30, 20, 0.03); }
+.doc-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #2a251f;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+/* ---------- Back-to-top / footer trim ---------- */
+.doc-footer-note { margin-top: 0; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1000px) {
+  .doc-hero { padding: 56px 32px 40px; }
+  .doc-hero .pp-h1 { font-size: 52px; }
+  .doc-layout {
+    grid-template-columns: 1fr;
+    padding: 0 32px 40px;
+    gap: 0;
+  }
+  /* On narrow screens the rail becomes a collapsible index at the top
+     rather than a sticky sidebar. */
+  .doc-toc {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 40px;
+    padding: 18px 20px;
+    border: 1px solid rgba(40, 30, 20, 0.12);
+    border-radius: 12px;
+    background: rgba(40, 30, 20, 0.02);
+  }
+  .doc-toc-toggle { cursor: pointer; }
+}
+@media (max-width: 680px) {
+  .doc-hero .pp-h1 { font-size: 40px; }
+  .doc-h2 { font-size: 27px; }
+  .doc-step {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    justify-items: center;
+    text-align: center;
+  }
+  .doc-step .doc-shot { width: min(320px, 100%); }
+  .doc-step-body { text-align: left; width: 100%; }
+  .doc-main p, .doc-main ul, .doc-main ol { font-size: 15px; }
+}

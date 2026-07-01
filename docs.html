@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>MissionWeaver GCS User Guide</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="The MissionWeaver GCS User Guide: setup, monitoring, radio and receiver configuration, commands, settings, and troubleshooting." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="docs.css" />
+</head>
+<body>
+<div class="pp" id="top">
+
+  <!-- ─── Nav (matches the landing page chrome) ─────────────────────── -->
+  <header class="pp-nav">
+    <a class="pp-logo" href="index.html" style="text-decoration:none">
+      <span class="pp-logo-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9" /><path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5" /><circle cx="12" cy="9" r="2" /><path d="M16.2 4.8c2 2 2.26 5.11.8 7.47" /><path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1" /><path d="M9.5 18h5" /><path d="m8 22 4-11 4 11" />
+        </svg>
+      </span>
+      <span class="pp-logo-text">MissionWeaver <em>GCS</em></span>
+    </a>
+    <nav class="pp-nav-links">
+      <a href="index.html">Product</a>
+      <a href="index.html#specs">Specs</a>
+      <a class="pp-nav-cta" href="docs-assets/MissionWeaver-GCS-User-Guide.pdf" download>Download PDF</a>
+    </nav>
+  </header>
+
+  <!-- ─── Doc hero ──────────────────────────────────────────────────── -->
+  <section class="doc-hero">
+    <h1 class="pp-h1">
+      <span class="pp-h1-line2">The User Guide.</span>
+    </h1>
+    <p class="pp-lede">
+      Setup, monitoring, radio and receiver configuration, quick commands,
+      settings, and troubleshooting.
+    </p>
+    <div class="pp-cta">
+      <a class="pp-btn pp-btn-accent pp-btn-xl" href="docs-assets/MissionWeaver-GCS-User-Guide.pdf" download>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
+        </svg>
+        Download PDF
+      </a>
+      <a class="pp-btn pp-btn-ghost pp-btn-xl" href="index.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" x2="5" y1="12" y2="12" /><polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back to home
+      </a>
+    </div>
+    <div class="pp-hero-meta">
+      <span><b>Version</b> v1.0.0</span>
+    </div>
+  </section>
+
+  <!-- ─── Layout: chapter rail + prose ──────────────────────────────── -->
+  <div class="doc-layout">
+
+    <aside class="doc-toc">
+      <p class="doc-toc-label">Contents</p>
+      <nav aria-label="Chapters">
+        <ol>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#sec-hardware">Hardware Overview</a></li>
+          <li><a href="#getting-started">Getting Started</a></li>
+          <li><a href="#sec-interface">The Two-Button Interface</a></li>
+          <li><a href="#sec-monitor">Monitoring</a></li>
+          <li><a href="#sec-gcs">Groundstation Software</a></li>
+          <li><a href="#sec-rc">RC Receiver Setup</a></li>
+          <li><a href="#sec-rfd">RFD Radio Configuration</a></li>
+          <li><a href="#quick-commands">Quick Commands</a></li>
+          <li><a href="#settings">Settings</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+        </ol>
+      </nav>
+    </aside>
+
+    <main class="doc-main">
+
+      <!-- ══ 1. Introduction ══════════════════════════════════════════ -->
+      <section class="doc-chapter" id="introduction">
+        <p class="doc-chapter-eyebrow">Chapter 01</p>
+        <h2 class="doc-h2">Introduction</h2>
+        <p>
+          The MissionWeaver GCS monitors and controls an aircraft from the
+          ground. A handheld unit, it sits inline between your ground station
+          software (Mission Planner, QGroundControl) and an RFD900 radio. It
+          forwards MAVLink unchanged, so your existing tools work as usual, and
+          reads a passive copy to drive its own interface. An internal RC
+          receiver allows you to fly the aircraft manually.
+        </p>
+
+        <h3 class="doc-h3">What it does</h3>
+        <ul>
+          <li><strong>Monitoring.</strong> Six pages show link and aircraft state: radio, mission, vehicle, sticks, GPS, and HUD.</li>
+          <li><strong>Two GCS connections.</strong> USB serial or USB-Ethernet (MAVLink UDP).</li>
+          <li><strong>On-device radio config.</strong> Edit and apply SiK parameters, local or over-air, without a laptop.</li>
+          <li><strong>RC receiver setup.</strong> FrSky and ELRS binding, stick-mode check, and ELRS firmware flashing.</li>
+          <li><strong>Two-button control.</strong> Every action uses the two physical buttons.</li>
+        </ul>
+
+        <h3 class="doc-h3">What's in the box</h3>
+        <p>
+          The device ships fully assembled, with the RFD900 radio and an RC
+          receiver already installed inside. You never have to open the case.
+        </p>
+        <p>The box contains:</p>
+        <ul>
+          <li>MissionWeaver GCS unit</li>
+          <li>2× 915 MHz antennas</li>
+          <li>USB-C cable</li>
+          <li>Quick-start card</li>
+        </ul>
+        <p>
+          Which RC receiver is installed depends on the model you bought. The
+          <a href="#sec-hardware">Hardware Overview</a> chapter explains how to
+          identify it.
+        </p>
+        <p>
+          Confirm all items are present before you leave for the flight line. A
+          missing cable or antenna is easier to fix at the bench than in the
+          field.
+        </p>
+
+        <h3 class="doc-h3">Who this guide is for</h3>
+        <p>
+          This guide is for UAS field operators setting up or running a flight
+          with the MissionWeaver GCS. It assumes you can fly the aircraft and
+          operate your ground station, and does not re-teach material their own
+          manuals already cover. Radio and receiver internals appear only as
+          deep as you need to set them safely.
+        </p>
+        <p>
+          If you are new to the device, read Chapters 2 to 5 in order, then use
+          the guide as reference.
+        </p>
+
+        <aside class="doc-callout doc-note">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Note</span>
+            <p>This guide covers hardware and software version <strong>v1.0.0</strong>. Screens and menus may differ slightly on other builds.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ══ 2. Hardware Overview ═════════════════════════════════════ -->
+      <section class="doc-chapter" id="sec-hardware">
+        <p class="doc-chapter-eyebrow">Chapter 02</p>
+        <h2 class="doc-h2">Hardware Overview</h2>
+        <p>
+          The MissionWeaver GCS is a sealed enclosure with a display and two
+          buttons on the front, USB-C and antenna connectors, and the radio and
+          RC receiver mounted inside.
+        </p>
+
+        <h3 class="doc-h3">Display</h3>
+        <p>The display is a 2.42-inch, 128 by 64 pixel monochrome OLED.</p>
+
+        <h3 class="doc-h3">Buttons</h3>
+        <p>
+          The device has two physical buttons, Left and Right. They are the only
+          controls. The <a href="#sec-interface">Two-Button Interface</a> chapter
+          covers how they drive the device.
+        </p>
+
+        <h3 class="doc-h3">Connectors</h3>
+        <ul>
+          <li><strong>USB-C.</strong> Power and the data connection to your ground station. The device has no battery, so it powers on when you connect the cable.</li>
+          <li><strong>Antennas.</strong> The antennas for the RFD900. Attach the supplied antennas before you power on the device.</li>
+        </ul>
+        <aside class="doc-callout doc-warning">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Warning</span>
+            <p>Plug into a USB-C port on the computer when available. Though not usually required, if radio performance is poor, connect the device to a computer that can supply more power.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Internal radio and receiver</h3>
+        <p>
+          The RFD900 radio is mounted inside and connects to the 915 MHz antenna
+          connector. An RC receiver is installed as well, either a FrSky or an
+          ExpressLRS (ELRS) unit, determined by the variant you ordered.
+        </p>
+        <p>
+          To confirm which receiver you have, open Settings, then Receiver, and
+          read the configured RC type.
+        </p>
+
+        <h3 class="doc-h3">External receiver</h3>
+        <p>
+          You can use an external RC receiver in place of the internal one.
+          Connect it to the external SBUS input, then select it in software. See
+          <a href="#sec-sbus-source">Set the RC type and source</a> for the steps.
+        </p>
+      </section>
+
+      <!-- ══ 3. Getting Started ═══════════════════════════════════════ -->
+      <section class="doc-chapter" id="getting-started">
+        <p class="doc-chapter-eyebrow">Chapter 03</p>
+        <h2 class="doc-h2">Getting Started</h2>
+        <p>
+          This chapter takes you from connecting the device to confirmed
+          telemetry, both on the screen and in your ground station.
+        </p>
+
+        <h3 class="doc-h3">Connect the hardware</h3>
+        <p>The radio and receiver are already inside, so setup is two steps:</p>
+        <ol>
+          <li>Attach the supplied antenna to the antenna connector.</li>
+          <li>Connect the device to your computer with the USB-C cable.</li>
+        </ol>
+        <aside class="doc-callout doc-warning">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Warning</span>
+            <p>Attach the antenna before you connect USB-C. Powering the radio without an antenna can damage it.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Power on and boot</h3>
+        <p>
+          The device powers on when you connect USB-C. It then probes the
+          internal radio, enters AT mode, reads the radio's settings, and opens
+          the MAVLink stream.
+        </p>
+        <p>
+          The device remembers the last baud rate that worked and tries it
+          first, so a normal boot connects quickly. If that rate fails, for
+          example after you change the radio configuration, it scans the other
+          rates, which takes longer.
+        </p>
+        <div class="doc-seq-wrap">
+          <div class="doc-seq">
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_01_splash.png" alt="Boot: splash" loading="lazy" /></span><span class="doc-seq-label"><span class="num">1</span>Splash</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_02_detecting.png" alt="Boot: detecting" loading="lazy" /></span><span class="doc-seq-label"><span class="num">2</span>Detecting</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_03_baudscan.png" alt="Boot: baud scan" loading="lazy" /></span><span class="doc-seq-label"><span class="num">3</span>Baud scan</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_04_banner.png" alt="Boot: reading banner" loading="lazy" /></span><span class="doc-seq-label"><span class="num">4</span>Reading banner</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_05_params.png" alt="Boot: reading params" loading="lazy" /></span><span class="doc-seq-label"><span class="num">5</span>Reading params</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_06_remote.png" alt="Boot: remote SBUS" loading="lazy" /></span><span class="doc-seq-label"><span class="num">6</span>Remote SBUS</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_07_ready.png" alt="Boot: RFD ready" loading="lazy" /></span><span class="doc-seq-label"><span class="num">7</span>RFD ready</span></div>
+            <div class="doc-seq-item"><span class="doc-shot"><img src="docs-assets/screens/boot_08_wait_mavlink.png" alt="Boot: wait for MAVLink" loading="lazy" /></span><span class="doc-seq-label"><span class="num">8</span>Wait for MAVLink</span></div>
+          </div>
+          <p class="doc-caption">The boot sequence, from splash to waiting for MAVLink.</p>
+        </div>
+
+        <h3 class="doc-h3">Connect your ground station</h3>
+        <p>
+          Once the link is established, you may open your ground station software
+          to control the aircraft. In most cases, your ground station software
+          should automatically detect the MissionWeaver and start the feed, via
+          an emulated network connection. If it does not, or if you'd prefer to
+          use a standard serial connection, see
+          <a href="#sec-gcs">Connecting to Groundstation Software</a>.
+        </p>
+
+        <h3 class="doc-h3">Confirm telemetry</h3>
+        <p>Confirm the link before you rely on it:</p>
+        <ol>
+          <li>Check the link indicator in the screen header.</li>
+          <li>Step through the <a href="#sec-monitor">monitor pages</a> and confirm live aircraft data.</li>
+        </ol>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/radio_signal_100.png" alt="The radio monitor page showing 100% signal" loading="lazy" /></span>
+          <figcaption>The radio page: link signal, network ID, and frequency.</figcaption>
+        </figure>
+        <p>
+          You can now monitor the aircraft. To control it, bind the RC receiver;
+          see <a href="#sec-rc">RC Receiver Setup</a>.
+        </p>
+      </section>
+
+      <!-- ══ 4. Two-Button Interface ══════════════════════════════════ -->
+      <section class="doc-chapter" id="sec-interface">
+        <p class="doc-chapter-eyebrow">Chapter 04</p>
+        <h2 class="doc-h2">The Two-Button Interface</h2>
+        <p>
+          Two buttons run the entire device, Left and Right, and one rule covers
+          almost every screen: <em>Left navigates, Right acts, a left hold backs
+          out, a right hold confirms an action, and holding both brings up quick
+          actions.</em> Learn that and you can work the device without looking
+          anything up.
+        </p>
+
+        <h3 class="doc-h3">The five gestures</h3>
+        <p>
+          A click is a quick press and release. A hold means keeping a button
+          down for about a second. From those two actions the device reads five
+          gestures.
+        </p>
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <thead><tr><th>Gesture</th><th>What it does</th></tr></thead>
+            <tbody>
+              <tr><td>Click L</td><td>Navigate: previous item, or previous monitor page</td></tr>
+              <tr><td>Click R</td><td>Act: select, confirm, or next monitor page</td></tr>
+              <tr><td>Hold L</td><td>Back out one level, or open Settings from a monitor page</td></tr>
+              <tr><td>Hold R</td><td>Jump to the relevant settings for the current page, or confirm an action</td></tr>
+              <tr><td>Hold L + R</td><td>Open the quick-actions menu, from any screen</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="doc-h3">The hint bar</h3>
+        <p>
+          The buttons keep these roles on most screens, but a few screens
+          reassign them. You do not have to track which. After any press, the
+          hint bar at the foot of the screen shows what Left and Right do at that
+          moment, and auto-hides after 2 seconds.
+        </p>
+
+        <h3 class="doc-h3">Confirming risky actions</h3>
+        <p>
+          A few actions taken on the device can drop the link to a flying
+          aircraft, mis-bind the receiver, or push bad settings to the far radio.
+          The device guards each one behind a hold-to-confirm: hold the right
+          button for a few seconds until it commits.
+        </p>
+      </section>
+
+      <!-- ══ 5. Monitoring ════════════════════════════════════════════ -->
+      <section class="doc-chapter" id="sec-monitor">
+        <p class="doc-chapter-eyebrow">Chapter 05</p>
+        <h2 class="doc-h2">Monitoring</h2>
+        <p>
+          Monitoring is the default mode, and it is where you spend most of a
+          flight. The home screen is a ring of six pages. Click Left or Right to
+          step through them, and the ring wraps at both ends. A strip of six
+          icons across the top marks the page you are on, and the header shows
+          "ARM" in the top-right when the aircraft is armed.
+        </p>
+
+        <h3 class="doc-h3">Radio</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_radio.png" alt="Radio monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Link health at a glance: signal strength as a percentage and a bar, the network ID, and the frequency band. Check this page first. When the signal falls, expect telemetry to lag or drop.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Mission</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_mission.png" alt="Mission monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Progress through the flight plan: the current waypoint out of the total, with the distance and bearing to the next one.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Vehicle</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_vehicle.png" alt="Vehicle monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Power and arm state: battery charge with pack and per-cell voltage, the active flight mode, and how long the aircraft has been armed.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Controller</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_sticks.png" alt="Controller monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>The live stick positions, the stick mode and RC type, and the receiver link state. Use it to confirm the transmitter is mapped and connected before you launch.</p></div>
+        </div>
+
+        <h3 class="doc-h3">GPS</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_gps.png" alt="GPS monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Position and fix quality: satellite count, fix type, HDOP, and latitude and longitude.</p></div>
+        </div>
+
+        <h3 class="doc-h3">HUD</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_hud.png" alt="HUD monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Attitude and motion: an artificial horizon with altitude, heading, and speed.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Status messages</h3>
+        <div class="doc-step doc-pagerow">
+          <span class="doc-shot"><img src="docs-assets/screens/monitor_statustext.png" alt="Status text on a monitor page" loading="lazy" /></span>
+          <div class="doc-step-body"><p>The latest message from the autopilot can appear along the bottom of any page, such as a GPS-lock or pre-arm notice. Turn it on under <a href="#sec-display">Display settings</a>.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Auto-cycle</h3>
+        <p>
+          The ring can advance on its own at an interval you set, for hands-free
+          monitoring. It pauses while you press a button and resumes afterward.
+          Enable it under <a href="#sec-display">Display settings</a>.
+        </p>
+      </section>
+
+      <!-- ══ 6. Groundstation Software ════════════════════════════════ -->
+      <section class="doc-chapter" id="sec-gcs">
+        <p class="doc-chapter-eyebrow">Chapter 06</p>
+        <h2 class="doc-h2">Connecting to Groundstation Software</h2>
+        <p>
+          Connect the device to your laptop with the USB-C cable, then open your
+          ground station. Mission Planner and QGroundControl both connect to it
+          automatically. If one does not, add a serial connection by hand.
+        </p>
+
+        <h3 class="doc-h3">It connects automatically</h3>
+        <p>
+          Over USB the device brings up a small network and broadcasts telemetry
+          via UDP. Mission Planner and QGroundControl listen for that stream and
+          connect within a few seconds, with no port or baud rate to set. Watch
+          for telemetry to appear on the <a href="#sec-monitor">monitor pages</a>
+          and in the ground station at the same time.
+        </p>
+        <p>
+          The stream is MAVLink over UDP on port <code>14550</code>, if you need
+          to open a firewall.
+        </p>
+
+        <h3 class="doc-h3">If it does not connect, use serial</h3>
+        <p>
+          The same cable also exposes a standard serial port. Select that port in
+          your ground station and connect. The baud rate does not matter; on a
+          USB connection the setting is ignored.
+        </p>
+        <ul>
+          <li><strong>Mission Planner:</strong> choose the device's port at the top right, then click Connect.</li>
+          <li><strong>QGroundControl:</strong> open Application Settings, add a Serial link under Comm Links, choose the port, then connect.</li>
+        </ul>
+      </section>
+
+      <!-- ══ 7. RC Receiver Setup ═════════════════════════════════════ -->
+      <section class="doc-chapter" id="sec-rc">
+        <p class="doc-chapter-eyebrow">Chapter 07</p>
+        <h2 class="doc-h2">RC Receiver Setup</h2>
+        <p>
+          The device contains an internal RC receiver for controllers. Binding
+          pairs your controller with the receiver with your transmitter. Set the
+          RC type to match the transmitter, then run the bind wizard. The device
+          drives the receiver and shows each transmitter step on screen.
+        </p>
+
+        <h3 class="doc-h3" id="sec-sbus-source">Set the RC type and source</h3>
+        <p>
+          Open <em>Settings</em>, then <em>Receiver</em>. Set <em>RC type</em> to
+          match your transmitter: <em>ELRS</em>, <em>FrSky ACCESS</em>, or
+          <em>FrSky ACCST D16</em>. Leave <em>RC src</em> on <em>Int</em> to use
+          the internal receiver, or switch to <em>Ext</em> for an external SBUS
+          input.
+        </p>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_receiver.png" alt="Receiver settings menu" loading="lazy" /></span>
+        </figure>
+        <aside class="doc-callout doc-note">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Note</span>
+            <p>Your device ships with the RC type already set for your receiver. Updating with the incorrect software package can misconfigure this, so check this setting after updating if you're unsure.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Start a bind</h3>
+        <p>
+          From the <em>Receiver</em> menu, select <em>Bind</em>. You can also hold
+          Left and Right together from any screen to reach the pair prompt. Choose
+          <em>Yes</em> to begin.
+        </p>
+
+        <h3 class="doc-h3">Bind an ELRS receiver</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/bind_elrs_3_instruct.png" alt="ELRS bind instructions" loading="lazy" /></span>
+          <div class="doc-step-body"><p>On the controller, press <em>SYS</em>, open <em>ExpressLRS</em>, then select <em>Bind</em>.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Bind a FrSky ACCESS receiver</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/bind_access_4_register.png" alt="FrSky ACCESS register step" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Open <em>Register</em> and press <em>Enter</em>.</p></div>
+        </div>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/bind_access_5_receiver.png" alt="FrSky ACCESS receiver bind step" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Go to <em>Receiver 1</em> and click <em>Bind</em>.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Bind a FrSky ACCST D16 receiver</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/bind_d16_4_mode.png" alt="FrSky D16 mode step" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Set the mode to <em>ACCST D16</em> and select <em>Bind</em>.</p></div>
+        </div>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/bind_d16_5_telem.png" alt="FrSky D16 telemetry step" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Select <em>CH1-8 Telem ON</em>.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Check the sticks</h3>
+        <p>
+          Open <em>Settings</em>, <em>Receiver</em>, <em>Sticks</em> to watch the
+          live stick positions. If the two sticks do not show the way you hold
+          them, cycle the stick mode, 1 to 4, until the preview matches your
+          transmitter.
+        </p>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_stick_preview.png" alt="Live stick preview" loading="lazy" /></span>
+        </figure>
+        <p>
+          The stick mode only changes the on-device preview. It does not change
+          the data sent to the aircraft. Configure stick mixing and channel
+          mapping in your controller's model setup and on the aircraft.
+        </p>
+
+        <h3 class="doc-h3">Flash ELRS firmware</h3>
+        <p>
+          Update the ELRS receiver over its own Wi-Fi portal. When the receiver
+          finds no controller, it starts a Wi-Fi access point you flash from.
+        </p>
+        <ol>
+          <li>Power on the device with no paired controller online.</li>
+          <li>Wait 60 seconds. The receiver starts a Wi-Fi network named <code>ExpressLRS RX</code>.</li>
+          <li>Join that network from a phone or laptop, then open the portal in a browser.</li>
+          <li>Flash the firmware for the BetaFPV 2.4 GHz RX Lite target.</li>
+        </ol>
+        <aside class="doc-callout doc-danger">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Danger</span>
+            <p>Do not disconnect power during a flash. An interrupted flash can leave the receiver unusable.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ══ 8. RFD Radio Configuration ═══════════════════════════════ -->
+      <section class="doc-chapter" id="sec-rfd">
+        <p class="doc-chapter-eyebrow">Chapter 08</p>
+        <h2 class="doc-h2">RFD Radio Configuration</h2>
+        <p>
+          The device has the ability to read and change RFD radio settings
+          on-device, through the <em>RFD Util</em> menu.
+        </p>
+
+        <h3 class="doc-h3">Open RFD Util</h3>
+        <p>
+          Open <em>Settings</em>, then <em>RFD Util</em>. Editing interrupts the
+          live MAVLink link, so the device asks you to confirm before it opens.
+        </p>
+        <aside class="doc-callout doc-warning">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Warning</span>
+            <p>Editing the radio drops the link to the aircraft. Do not open <em>RFD Util</em> while an aircraft depends on that link.</p>
+          </div>
+        </aside>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/rfd_2_list_top.png" alt="RFD Util parameter list" loading="lazy" /></span>
+        </figure>
+
+        <h3 class="doc-h3">Edit a parameter</h3>
+        <p>
+          Select a row to change it. Most rows cycle through a list of preset
+          values. Edits are staged, not live. The device holds each pending value
+          against the current one, so nothing reaches the radio until you click
+          apply.
+        </p>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_editor.png" alt="Numeric parameter editor" loading="lazy" /></span>
+          <div class="doc-step-body"><p>A numeric value such as the network ID opens this editor. Left and Right step the number, and repeated taps grow the step from 1 to 10 to 100.</p></div>
+        </div>
+        <p>
+          A link only forms when both radios share the parameters that define the
+          channel: network ID, frequency range, channel count, and air speed.
+          Change one of these and the far radio has to match, which is what
+          <em>Apply remote</em> is for.
+        </p>
+
+        <h3 class="doc-h3">Apply your changes</h3>
+        <p>At the end, there are two options to commit changes.</p>
+        <ul>
+          <li><strong>Apply</strong> writes the pending values to the local radio. The device reboots, and the link returns on its own.</li>
+          <li><strong>Apply remote</strong> sends the same change over the air to the far radio first, so both ends stay in step.</li>
+        </ul>
+        <aside class="doc-callout doc-note">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Note</span>
+            <p>Applying reboots the MissionWeaver. MAVLink flow re-establishes once the device starts back up.</p>
+          </div>
+        </aside>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_danger_overair.png" alt="Over-air apply confirmation" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Over-air apply changes the far radio. Hold Right for about 1.2 seconds to confirm, or press Left to cancel.</p></div>
+        </div>
+        <aside class="doc-callout doc-danger">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Danger</span>
+            <p>A bad value sent over the air can strand the aircraft's link. Confirm every value before you apply to the remote radio.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Re-read, reset, and save</h3>
+        <p>
+          <em>Re-read</em> reloads the current values from the radio and drops any
+          pending edits. <em>Reset to defaults</em> restores the radio's factory
+          settings.
+        </p>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_danger_factory.png" alt="Factory reset confirmation" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Factory reset clears every radio setting. Hold Right to confirm, or press Left to cancel.</p></div>
+        </div>
+        <p>If you leave with unsaved edits, the device asks what to do with them.</p>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_save_prompt.png" alt="Save prompt" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Choose <em>Yes</em> to save, <em>No</em> to discard, or <em>Back</em> to keep editing.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Configure from a laptop</h3>
+        <p>
+          The Serial interface may also be opened through standard
+          <a href="https://mwgs.link/rfdtools" target="_blank" rel="noopener">RFDTools</a>,
+          you may connect at any baud rate as the MissionWeaver auto-detects the
+          RFD's baud on startup.
+        </p>
+      </section>
+
+      <!-- ══ 9. Quick Commands ════════════════════════════════════════ -->
+      <section class="doc-chapter" id="quick-commands">
+        <p class="doc-chapter-eyebrow">Chapter 09</p>
+        <h2 class="doc-h2">Quick Commands</h2>
+        <p>
+          Hold Left and Right together from any screen to open the quick-actions
+          menu. It gives quick access to common commands sent to the aircraft and
+          controls for the device itself.
+        </p>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/quick_sel_0.png" alt="Quick-actions menu" loading="lazy" /></span>
+        </figure>
+
+        <h3 class="doc-h3">Arm and disarm</h3>
+        <p>
+          <em>Arm</em> commands the aircraft to arm, honoring its normal arming
+          checks. Once armed, the same row reads <em>Disarm</em>.
+        </p>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_danger_arm.png" alt="Arm confirmation" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Arming is held behind a confirm. Hold Right for about 1.2 seconds, or press Left to cancel.</p></div>
+        </div>
+        <aside class="doc-callout doc-danger">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Danger</span>
+            <p>Arming can spin up the motors. Confirm the area is clear of people before you arm.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Enable servo outputs</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/quick_sel_1.png" alt="Servo output command" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Servo Out</em> turns on the aircraft's outputs, the same as releasing its safety switch. It uses the same hold-to-confirm as arming.</p></div>
+        </div>
+        <aside class="doc-callout doc-warning">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Warning</span>
+            <p>Outputs can drive control surfaces and motors. Keep clear before you enable them.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Reboot the autopilot</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/quick_sel_4.png" alt="Reboot autopilot command" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Reboot Autopilot</em> restarts the aircraft's flight controller. The radios stay up, so telemetry returns once the autopilot finishes booting.</p></div>
+        </div>
+        <aside class="doc-callout doc-warning">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" /><path d="M12 9v4" /><path d="M12 17h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Warning</span>
+            <p>Rebooting the autopilot cuts flight control while it restarts. Only do it on the ground.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">Stealth mode</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/quick_sel_6.png" alt="Stealth mode command" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Stealth Mode</em> turns off the display and the buzzer, so the device shows and sounds nothing, even through a reboot. Telemetry keeps flowing underneath. Use it for night or low-profile operations.</p></div>
+        </div>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_stealth_confirm.png" alt="Leave stealth mode confirmation" loading="lazy" /></span>
+          <div class="doc-step-body"><p>To leave stealth mode, hold Left and Right together for five seconds.</p></div>
+        </div>
+      </section>
+
+      <!-- ══ 10. Settings ═════════════════════════════════════════════ -->
+      <section class="doc-chapter" id="settings">
+        <p class="doc-chapter-eyebrow">Chapter 10</p>
+        <h2 class="doc-h2">Settings</h2>
+        <p>
+          From a monitor page, hold Left to open Settings. Click Left to move the
+          cursor and click Right to open a category or change a value; hold Left
+          to back out. Changes are saved as soon as you exit the settings menu,
+          so there is no separate save step.
+        </p>
+        <figure class="doc-figure">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_root.png" alt="Settings root menu" loading="lazy" /></span>
+        </figure>
+        <p>
+          The categories are below, in menu order. <em>Receiver</em> and
+          <em>RFD Util</em> open the flows documented in their own chapters.
+        </p>
+
+        <h3 class="doc-h3" id="sec-display">Display</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_display.png" alt="Display settings" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Brightness</em> and <em>Sleep</em>, the idle time before the screen blanks, are self-explanatory. <em>Cycle</em> sets how often the monitor ring advances on its own. <em>Status Text</em> shows the autopilot's latest message on the <a href="#sec-monitor">monitor pages</a>.</p></div>
+        </div>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_display_pagech.png" alt="Page channel settings" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Page+</em> and <em>Page-</em> assign a transmitter channel, 5 to 16, to step the monitor ring forward or back, so you can change pages from a switch on your controller. Channels 1 to 4 are the sticks and cannot be used. Both are off by default.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Audio</h3>
+        <p>
+          Audio controls the buzzer, the device's only sound. <em>Buzzer</em>
+          turns it on or off, and <em>Volume</em> sets the level. The buzzer
+          chirps on button presses and warns on blocked or risky actions. It
+          ships off, so the device stays quiet until you enable it.
+        </p>
+
+        <h3 class="doc-h3">Receiver</h3>
+        <p>
+          Receiver sets the RC type and the SBUS source, runs the bind wizard,
+          and reboots the receiver. See <a href="#sec-rc">RC Receiver Setup</a>.
+          With an external SBUS source, the receiver-specific rows show
+          <em>(ext)</em> and do nothing.
+        </p>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_channels.png" alt="Receiver channels view" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Channels</em> shows the live value of every receiver channel as a bar, so you can check switches, trims, and failsafe before a flight.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Vehicle</h3>
+        <p>
+          Vehicle tunes how the device reads the battery. <em>Cells</em> is the
+          pack size: leave it on <em>Auto</em> to infer the count from resting
+          voltage, or set it yourself when the guess is wrong. <em>Lo Cell</em>
+          sets a per-cell low-voltage warning; the buzzer sounds when any cell
+          drops below it. It is off by default.
+        </p>
+
+        <h3 class="doc-h3">RFD Util</h3>
+        <p>
+          RFD Util opens the radio configuration editor, including re-read and
+          factory reset. Entering it drops the MAVLink link, so the device asks
+          you to confirm first. See the
+          <a href="#sec-rfd">RFD Radio Configuration</a> chapter.
+        </p>
+
+        <h3 class="doc-h3">About</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_about.png" alt="About screen" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Firmware version and build date, uptime, free memory, and the detected RFD link with its baud and band, or <em>RFD not detected</em>. Quote these when you report a problem.</p></div>
+        </div>
+
+        <h3 class="doc-h3">Update</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_update_mode.png" alt="Firmware update mode confirmation" loading="lazy" /></span>
+          <div class="doc-step-body"><p><em>Update</em> puts the device into firmware-update mode, behind a hold-to-confirm. On confirm it reboots and appears to your computer as a USB drive; copy the new firmware file onto it. Firmware and instructions are at <a href="https://mwgs.link/update" target="_blank" rel="noopener">mwgs.link/update</a>.</p></div>
+        </div>
+        <aside class="doc-callout doc-danger">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Danger</span>
+            <p>Do not unplug the device while firmware is writing.</p>
+          </div>
+        </aside>
+      </section>
+
+      <!-- ══ 11. Troubleshooting ══════════════════════════════════════ -->
+      <section class="doc-chapter" id="troubleshooting">
+        <p class="doc-chapter-eyebrow">Chapter 11</p>
+        <h2 class="doc-h2">Troubleshooting</h2>
+        <p>
+          Most field problems are one of three: no telemetry to the laptop, no
+          radio link, or no control link. Find your symptom below and work the
+          fix.
+        </p>
+        <aside class="doc-callout doc-note">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Note</span>
+            <p>Before blaming the link, check the device's own monitor pages. If they show telemetry, the radio link is good and the problem is on the laptop.</p>
+          </div>
+        </aside>
+
+        <h3 class="doc-h3">No telemetry in the ground station</h3>
+        <p>
+          Auto-connect runs over UDP. Mission Planner sometimes fails to release
+          UDP port 14550 from an earlier session, so it cannot pick up the stream
+          and auto-connect errors out. Connect by serial instead, or restart
+          Mission Planner to free the port. See
+          <a href="#sec-gcs">Connecting to Groundstation Software</a>.
+        </p>
+
+        <h3 class="doc-h3">No radio link, or a poor one</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/radio_signal_lost.png" alt="Radio page showing LOST" loading="lazy" /></span>
+          <div class="doc-step-body"><p>The Radio page reads <em>LOST</em>, or a low percentage that will not climb.</p></div>
+        </div>
+        <p>
+          A link forms only when both radios agree on the channel: network ID,
+          frequency range, channel count, and air speed. Confirm the local and
+          remote settings match in <em>RFD Util</em> or <em>RFDTools</em>; see the
+          <a href="#sec-rfd">RFD Radio Configuration</a> chapter.
+        </p>
+        <p>
+          On the ground, another RFD radio or MissionWeaver nearby on the same
+          settings can spoil the link. Move away from or power off any
+          conflicting unit. If the link still will not form, reset both RFD900
+          radios to defaults and set them up again to match.
+        </p>
+
+        <h3 class="doc-h3">No control link</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings/receiver/receiver_04_reboot_rc.png" alt="Reboot RC menu row" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Recover the receiver from <em>Settings</em>, <em>Receiver</em>, <em>Reboot RC</em>.</p></div>
+        </div>
+        <p>
+          If the controller is not on and bound within one minute of power-on,
+          the receiver stops looking for a link and starts its own Wi-Fi setup
+          mode. Turn the controller on, then reboot the receiver with
+          <em>Reboot RC</em> or power-cycle the device. The receiver searches for
+          the link again on the next start.
+        </p>
+
+        <h3 class="doc-h3">The radio is not detected</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/boot_noresponse.png" alt="Probing RFD, no response" loading="lazy" /></span>
+          <div class="doc-step-body"><p>Boot stops on <em>Probing RFD, No response</em>.</p></div>
+        </div>
+        <p>
+          The device cannot reach the RFD radio. Check that the radio is seated
+          and powered, then reboot.
+        </p>
+
+        <h3 class="doc-h3">Telemetry is garbled</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_baud_warn.png" alt="Baud mismatch warning" loading="lazy" /></span>
+          <div class="doc-step-body"><p>The device shows <em>BAUD MISMATCH</em>.</p></div>
+        </div>
+        <p>
+          Bytes are flowing but the device cannot read them as MAVLink, usually
+          because the autopilot's serial speed does not match the radio's. Pick a
+          common rate with Left and Right, then hold Right to set both radios, or
+          set the autopilot to match.
+        </p>
+
+        <h3 class="doc-h3">A button is stuck</h3>
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_stuck.png" alt="Button stuck warning" loading="lazy" /></span>
+          <div class="doc-step-body"><p>The device shows <em>BUTTON STUCK</em> and pauses.</p></div>
+        </div>
+        <p>A button is held down or jammed. Free it and the device resumes on its own.</p>
+
+        <h3 class="doc-h3">Getting support</h3>
+        <p>
+          Have the <em>About</em> page ready if you ask for help. Under
+          <em>Settings</em>, <em>About</em> it lists the firmware version, build
+          date, and the detected radio.
+        </p>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ─── Footer (matches the landing page) ─────────────────────────── -->
+  <footer class="pp-footer">
+    <div class="pp-footer-fine">
+      MissionWeaver GCS · RFD C2 · v1.0 · User Guide v1.0.0. © MissionWeaver.
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Scrollspy: highlight the chapter currently in view in the rail.
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.doc-toc a'));
+    var byId = {};
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      if (el) byId[id] = a;
+    });
+    if (typeof IntersectionObserver === 'undefined') return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        links.forEach(function (l) { l.classList.remove('is-active'); });
+        var a = byId[e.target.id];
+        if (a) a.classList.add('is-active');
+      });
+    }, { rootMargin: '-25% 0px -65% 0px', threshold: 0 });
+    Object.keys(byId).forEach(function (id) {
+      io.observe(document.getElementById(id));
+    });
+  })();
+</script>
+</body>
+</html>

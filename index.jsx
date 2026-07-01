@@ -141,6 +141,7 @@ const Nav = ({ showCta = true }) => (
       <a href="#monitor">Monitor</a>
       <a href="#tools">Tools</a>
       <a href="#specs">Specs</a>
+      <a href="docs.html">Guide</a>
       {/* Cart icon + count. On mobile it stays hidden until the hero CTA has
           scrolled out of view (App watches it via IntersectionObserver) — but
           CartButton overrides that and shows itself once the cart is non-empty
@@ -169,7 +170,7 @@ const Hero = ({ heroCtaRef }) => (
       <div className="pp-hero-meta">
         <span><b>RFD900X</b> 40km (25+ miles) Range</span>
         <span>·</span>
-        <span><b>ELRS</b> / <b>FrSky</b> / Other</span>
+        <span><b>ELRS</b> 2.4 GHz control</span>
         <span>·</span>
         <span><b>USB-C</b></span>
       </div>
@@ -269,7 +270,7 @@ const MENU_ITEMS = {
   set_receiver: [
     { label: 'RC src',  key: 'rc_src',  cycle: ['int', 'ext'] },
     { label: 'Sticks',  key: 'sticks',  cycle: ['M1', 'M2', 'M3', 'M4'] },
-    { label: 'RC type', key: 'rc_type', cycle: ['FrSky', 'ELRS'] },
+    { label: 'RC type', key: 'rc_type', cycle: ['ELRS'] },
     { icon: 'gamepad-2', label: 'Bind' },
     { label: 'Reboot RC' },
     { icon: 'zap', label: 'ELRS flash', danger: true },
@@ -325,7 +326,7 @@ const MENU_ITEMS = {
 const INITIAL_SETTINGS = {
   cycle: '4s', brightness: '75%', sleep: '30s',
   buzzer: 'off', volume: '50%',
-  rc_src: 'int', sticks: 'M2', rc_type: 'FrSky',
+  rc_src: 'int', sticks: 'M2', rc_type: 'ELRS',
   cells: '4S',
   rfd_serspd: '57', rfd_airspd: '64', rfd_txpwr: '20', rfd_ecc: 'on',
   rfd_mavlnk: 'raw', rfd_opprsnd: 'off', rfd_minfq: '915000',
@@ -640,7 +641,7 @@ const ScreenAbout = () => (
     <T x={3} y={14} size={6}>MissionWeaver GCS</T>
     <T x={3} y={22} size={6}>RFD C2 · v1.0</T>
     <T x={3} y={34} size={6}>ATSAMD21</T>
-    <T x={3} y={42} size={6}>FW 1.0.0  ·  Scarecrow</T>
+    <T x={3} y={42} size={6}>FW 1.0.0</T>
     <HintBar y={55} hl="back" />
   </Screen>
 );
@@ -1433,7 +1434,7 @@ const SpecsSection = () => (
         <Spec k="Radio" v="RFD900x · 915 MHz · 1 W" />
         <Spec k="Range" v="40 km LOS" />
         <Spec k="Antenna" v="2× SMA" />
-        <Spec k="Receiver" v="FrSky · ELRS · External" />
+        <Spec k="Receiver" v="ELRS 2.4 GHz · External SBUS" />
       </div>
       <div className="pp-specs-col">
         <Spec k="Display" v="128 × 64 OLED · monochrome" />
@@ -1448,6 +1449,10 @@ const SpecsSection = () => (
         <Spec k="Weight" v="312 g · 122 × 78 × 28 mm" />
       </div>
     </div>
+    <p className="pp-specs-note">
+      Ships with a 2.4 GHz ELRS receiver installed. FrSky ACCESS and ACCST D16
+      variants are available on request; <a href="mailto:contact@missionweaver.io">get in touch</a> to order one.
+    </p>
   </section>
 );
 
@@ -1460,8 +1465,7 @@ const Order = () => (
         <span className="pp-faint">Pick it up only when you want to.</span>
       </h2>
       <div className="pp-cta">
-        <AddToCart size="pp-btn-xl" />
-        <a href="#" className="pp-btn pp-btn-ghost pp-btn-xl">Read the docs →</a>
+        <a href="docs.html" className="pp-btn pp-btn-ghost pp-btn-xl">Read the docs →</a>
       </div>
       <div className="pp-fine">
         Love it or your money back. Ships working right out the box. No subscription needed.
@@ -1474,14 +1478,12 @@ const Footer = () => (
   <footer className="pp-footer">
     <div className="pp-footer-row">
       <div className="pp-footer-links">
-        <a href="#">Docs</a>
-        <a href="#">Firmware</a>
-        <a href="#">GitHub</a>
-        <a href="mailto:contact@scarecrowengineering.com">Email</a>
+        <a href="docs.html">Docs</a>
+        <a href="mailto:contact@missionweaver.io">Email</a>
       </div>
     </div>
     <div className="pp-footer-fine">
-      Scarecrow Engineering · Designed in the USA · MAVLink is a trademark of Lorenz Meier. RFD is a trademark of RFDesign Pty Ltd.
+      Designed in the USA · MAVLink is a trademark of Lorenz Meier. RFD is a trademark of RFDesign Pty Ltd.
     </div>
   </footer>
 );

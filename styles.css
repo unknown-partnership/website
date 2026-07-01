@@ -377,7 +377,6 @@ body::-webkit-scrollbar {
 .pp-hero-screen-inner {
   --hero-k: 3;
   position: relative;
-  transform: rotate(-1.5deg);
   filter: drop-shadow(0 24px 40px rgba(0, 0, 0, .22));
 }
 @media (max-width: 1280px) { .pp-hero-screen-inner { --hero-k: 2.8; } }
@@ -797,6 +796,22 @@ body::-webkit-scrollbar {
   font-weight: 500;
   letter-spacing: -0.005em;
 }
+/* Small print under the Specs grid: the FrSky "on request" sidenote. */
+.pp-specs-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(40, 30, 20, 0.5);
+  margin: 40px 0 0;
+  max-width: 60ch;
+}
+.pp-specs-note a {
+  color: #c96442;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 100, 66, 0.35);
+  transition: color .15s, border-color .15s;
+}
+.pp-specs-note a:hover { color: #a6512f; border-bottom-color: #a6512f; }
 
 /* ---------- Final CTA ---------- */
 .pp-order {
@@ -1135,6 +1150,12 @@ body::-webkit-scrollbar {
   gap: 14px; padding: 16px 22px;
   border-bottom: 1px solid rgba(40, 30, 20, 0.07);
 }
+.pp-cart-line.is-backorder { background: rgba(201, 100, 66, 0.05); }
+.pp-cart-line.is-backorder::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: #c96442;
+}
+.pp-cart-line { position: relative; }
 .pp-cart-line-main { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .pp-cart-line-title {
   font-family: 'Geist', sans-serif; font-size: 14px; font-weight: 600; color: #2a251f;
@@ -1151,6 +1172,17 @@ body::-webkit-scrollbar {
   transition: color .15s;
 }
 .pp-cart-remove:hover:not(:disabled) { color: #b04a3a; }
+
+.pp-cart-note {
+  display: flex; align-items: flex-start; gap: 8px;
+  margin: 0 16px 4px; padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(201, 100, 66, 0.09);
+  color: #a6512f;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; line-height: 1.5;
+}
+.pp-cart-note svg { flex: 0 0 auto; margin-top: 1px; }
 
 .pp-cart-foot {
   border-top: 1px solid rgba(40, 30, 20, 0.1);
