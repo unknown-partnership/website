@@ -10,6 +10,7 @@ All files needed to render `index.html` locally.
 - `design-canvas.jsx` — canvas/artboard layout shell
 - `c2-screen.jsx` — device screen frame
 - `icons.jsx` — icon set
+- `shop.jsx` — Shopify Storefront API cart (drawer, qty, inventory/backorder). Dormant until configured — see `SHOPIFY_SETUP.md`
 - `flow-*.jsx` — individual screen flows (boot, system, monitor, settings, rfd, bind, passthrough, elrs)
 
 ## How to run

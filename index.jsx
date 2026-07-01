@@ -141,14 +141,12 @@ const Nav = ({ showCta = true }) => (
       <a href="#monitor">Monitor</a>
       <a href="#tools">Tools</a>
       <a href="#specs">Specs</a>
-      {/* On mobile the CTA is hidden until the hero CTA has scrolled out
-          of view (App watches it via IntersectionObserver). Adding the
-          class collapses it via the @media rule in styles.css; desktop
-          ignores the class and the button is always visible. */}
-      <a href="#order"
-         className={`pp-nav-cta${showCta ? '' : ' is-hidden-mobile'}`}>
-        Buy Now
-      </a>
+      {/* Cart icon + count. On mobile it stays hidden until the hero CTA has
+          scrolled out of view (App watches it via IntersectionObserver) — but
+          CartButton overrides that and shows itself once the cart is non-empty
+          so a shopper can always reopen it. `collapsed` = hero CTA still in
+          view; the @media rule in styles.css applies is-hidden-mobile. */}
+      <CartButton collapsed={!showCta} />
     </nav>
   </header>
 );
@@ -166,7 +164,7 @@ const Hero = ({ heroCtaRef }) => (
         your aircraft wants to tell you, so you can reach for the laptop only when you want to.
       </p>
       <div className="pp-cta">
-        <a ref={heroCtaRef} href="#order" className="pp-btn pp-btn-primary">Buy Now — $499</a>
+        <BuyButton innerRef={heroCtaRef} className="pp-btn pp-btn-primary">Buy Now</BuyButton>
       </div>
       <div className="pp-hero-meta">
         <span><b>RFD900X</b> 40km (25+ miles) Range</span>
@@ -1462,7 +1460,7 @@ const Order = () => (
         <span className="pp-faint">Pick it up only when you want to.</span>
       </h2>
       <div className="pp-cta">
-        <a href="#" className="pp-btn pp-btn-primary pp-btn-xl">Buy Now — $499</a>
+        <AddToCart size="pp-btn-xl" />
         <a href="#" className="pp-btn pp-btn-ghost pp-btn-xl">Read the docs →</a>
       </div>
       <div className="pp-fine">
@@ -1502,18 +1500,21 @@ const App = () => {
     rootMargin: '-74px 0px 0px 0px',
   });
   return (
-    <SimProvider>
-      <div className="pp">
-        <Nav showCta={!heroCtaInView} />
-        <Hero heroCtaRef={heroCtaRef} />
-        <MonitorSection />
-        <ToolsSection />
-        <PrinciplesSection />
-        <SpecsSection />
-        <Order />
-        <Footer />
-      </div>
-    </SimProvider>
+    <ShopProvider>
+      <SimProvider>
+        <div className="pp">
+          <Nav showCta={!heroCtaInView} />
+          <Hero heroCtaRef={heroCtaRef} />
+          <MonitorSection />
+          <ToolsSection />
+          <PrinciplesSection />
+          <SpecsSection />
+          <Order />
+          <Footer />
+          <CartDrawer />
+        </div>
+      </SimProvider>
+    </ShopProvider>
   );
 };
 

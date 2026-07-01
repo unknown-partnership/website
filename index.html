@@ -18,6 +18,9 @@
      to Babel-compile on every page load for nothing. -->
 <script type="text/babel" src="icons.jsx"></script>
 <script type="text/babel" src="c2-screen.jsx"></script>
+<!-- shop.jsx defines the Storefront cart (ShopProvider, CartDrawer, AddToCart,
+     BuyButton, CartButton) and must load before index.jsx, which consumes them. -->
+<script type="text/babel" src="shop.jsx"></script>
 <script type="text/babel" src="index.jsx"></script>
 </body>
 </html>
