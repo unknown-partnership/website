@@ -738,16 +738,36 @@
           <div class="doc-step-body"><p>Firmware version and build date, uptime, free memory, and the detected RFD link with its baud and band, or <em>RFD not detected</em>. Quote these when you report a problem.</p></div>
         </div>
 
-        <h3 class="doc-h3">Update</h3>
+        <h3 class="doc-h3" id="sec-update">Update</h3>
+        <p>
+          Update installs new firmware from the device itself. It takes about a
+          minute and needs only the device and its USB-C cable. The firmware ships
+          as a <code>.uf2</code> file: in update mode the device mounts on your
+          computer as a USB drive, and copying the file onto it flashes and
+          reboots automatically.
+        </p>
+        <ol>
+          <li>From a monitor page, hold <strong>Left</strong> to open Settings.</li>
+          <li>Click <strong>Left</strong> to move the cursor to <em>Update</em>, then click <strong>Right</strong> to select it.</li>
+          <li>Hold <strong>Right</strong> to confirm. The device reboots into update mode and appears as a USB drive.</li>
+          <li>In your file explorer, drag the downloaded <code>.uf2</code> onto the device's drive. It flashes, then reboots into the new firmware on its own.</li>
+        </ol>
         <div class="doc-step">
           <span class="doc-shot"><img src="docs-assets/screens/modal_update_mode.png" alt="Firmware update mode confirmation" loading="lazy" /></span>
-          <div class="doc-step-body"><p><em>Update</em> puts the device into firmware-update mode, behind a hold-to-confirm. On confirm it reboots and appears to your computer as a USB drive; copy the new firmware file onto it. Firmware and instructions are at <a href="https://mwgs.link/update" target="_blank" rel="noopener">mwgs.link/update</a>.</p></div>
+          <div class="doc-step-body"><p><em>Update</em> is guarded by a hold-to-confirm. Hold Right until it commits; the device then reboots into update mode. Firmware downloads and step-by-step instructions live on the <a href="update.html">firmware page</a>.</p></div>
         </div>
+        <aside class="doc-callout doc-note">
+          <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+          <div class="doc-callout-body">
+            <span class="doc-callout-tag">Note</span>
+            <p>To check the installed version, open <em>Settings</em>, then <em>About</em>, which lists the firmware version and build date.</p>
+          </div>
+        </aside>
         <aside class="doc-callout doc-danger">
           <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
           <div class="doc-callout-body">
             <span class="doc-callout-tag">Danger</span>
-            <p>Do not unplug the device while firmware is writing.</p>
+            <p>Do not unplug the device while firmware is writing. The device has no battery, so keep it on USB power until it reboots on its own.</p>
           </div>
         </aside>
       </section>
