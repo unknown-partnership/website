@@ -125,23 +125,33 @@ const ToolMonitorPagesScreen = () => {
   );
 };
 
+// The logo points at the site root so it always leads home. On the home
+// page itself, left-click just smooth-scrolls to the top instead of doing a
+// full reload; cmd/middle-click still opens the root in a new tab.
 const Logo = () => (
-  <div className="pp-logo">
+  <a
+    className="pp-logo"
+    href="/"
+    style={{ textDecoration: 'none' }}
+    onClick={(e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }}
+  >
     <span className="pp-logo-mark">
       <Icon name="radio-tower" size={18} stroke={2.2} />
     </span>
     <span className="pp-logo-text">MissionWeaver <em>GCS</em></span>
-  </div>
+  </a>
 );
 
 const Nav = ({ showCta = true }) => (
   <header className="pp-nav">
     <Logo />
     <nav className="pp-nav-links">
-      <a href="#monitor">Monitor</a>
-      <a href="#tools">Tools</a>
-      <a href="#specs">Specs</a>
-      <a href="docs.html">Guide</a>
+      <a href="docs.html">User Guide</a>
+      <a href="update.html">Firmware</a>
       {/* Cart icon + count. On mobile it stays hidden until the hero CTA has
           scrolled out of view (App watches it via IntersectionObserver) — but
           CartButton overrides that and shows itself once the cart is non-empty
@@ -1479,6 +1489,7 @@ const Footer = () => (
     <div className="pp-footer-row">
       <div className="pp-footer-links">
         <a href="docs.html">Docs</a>
+        <a href="update.html">Firmware</a>
         <a href="mailto:contact@missionweaver.io">Email</a>
       </div>
     </div>

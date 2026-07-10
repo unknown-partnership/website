@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>MissionWeaver GCS Firmware</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="description" content="Download the latest MissionWeaver GCS firmware and flash it from the device in under a minute." />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="docs.css" />
+<link rel="stylesheet" href="update.css" />
+</head>
+<body>
+<div class="pp" id="top">
+
+  <!-- Top bar + cart: shared React nav (site-nav.jsx, wired to shop.jsx).
+       Renders the fixed navbar and cart drawer; both position:fixed. -->
+  <div id="site-nav-root"></div>
+
+  <!-- ─── Hero + download ───────────────────────────────────────────── -->
+  <section class="doc-hero">
+    <h1 class="pp-h1">
+      <span class="pp-h1-line2">Firmware.</span>
+    </h1>
+    <p class="pp-lede">
+      The latest MissionWeaver GCS firmware, and how to flash it.
+    </p>
+
+    <div class="pp-cta">
+      <!-- Split button: main downloads the latest; the caret opens older versions.
+           The main link works without JS; the dropdown is a progressive enhancement. -->
+      <div class="fw-dl" id="fw-dl">
+        <a class="pp-btn pp-btn-accent pp-btn-xl fw-dl-main"
+           href="firmware/missionweaver-gs-1.0.0.uf2" download>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
+          </svg>
+          Download v1.0.0
+        </a>
+        <button type="button" class="pp-btn pp-btn-accent pp-btn-xl fw-dl-toggle"
+                id="fw-dl-toggle" aria-haspopup="true" aria-expanded="false" aria-label="Choose another version">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <!-- Older versions: copy an <li>, drop its .uf2 in /firmware, set version/date/size. -->
+        <ul class="fw-menu" id="fw-menu" role="menu" hidden>
+          <li role="none">
+            <a role="menuitem" href="firmware/missionweaver-gs-1.0.0.uf2" download>
+              <span class="fw-menu-ver">v1.0.0 <span class="fw-menu-tag">Latest</span></span>
+              <span class="fw-menu-meta">2026-05-31 · UF2 · 254 KB</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <a class="pp-btn pp-btn-ghost pp-btn-xl" href="index.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" x2="5" y1="12" y2="12" /><polyline points="12 19 5 12 12 5" />
+        </svg>
+        Back to home
+      </a>
+    </div>
+
+    <div class="pp-hero-meta">
+      <span><b>Latest</b> v1.0.0 · UF2 · 254 KB</span>
+    </div>
+  </section>
+
+  <div class="fw-wrap">
+
+    <!-- ─── How to update ───────────────────────────────────────────── -->
+    <section class="doc-chapter" id="update">
+      <p class="doc-chapter-eyebrow">Flashing</p>
+      <h2 class="doc-h2">Update the firmware</h2>
+      <p>
+        Updating takes about a minute and needs only the device and its USB-C
+        cable. The firmware ships as a <code>.uf2</code> file: when the device is
+        in update mode it appears on your computer as a USB drive, and copying the
+        file onto it flashes and reboots the device automatically.
+      </p>
+
+      <div class="fw-step">
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings_root.png" alt="Settings menu on the device" loading="lazy" /></span>
+          <div class="doc-step-body">
+            <p class="doc-chapter-eyebrow">Step 1</p>
+            <h3 class="doc-h3">Open Settings</h3>
+            <p>From any monitor page, hold the <strong>Left</strong> button to open Settings.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-step">
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/settings/root/root_06_update.png" alt="Update highlighted in the Settings menu" loading="lazy" /></span>
+          <div class="doc-step-body">
+            <p class="doc-chapter-eyebrow">Step 2</p>
+            <h3 class="doc-h3">Select Update</h3>
+            <p>Click <strong>Left</strong> to move the cursor to <em>Update</em>, then click <strong>Right</strong> to select it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-step">
+        <div class="doc-step">
+          <span class="doc-shot"><img src="docs-assets/screens/modal_update_mode.png" alt="Hold-to-confirm update-mode prompt" loading="lazy" /></span>
+          <div class="doc-step-body">
+            <p class="doc-chapter-eyebrow">Step 3</p>
+            <h3 class="doc-h3">Hold R to update</h3>
+            <p>Hold the <strong>Right</strong> button to confirm. The device reboots into update mode and mounts on your computer as a USB drive.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-step">
+        <div class="doc-step">
+          <span class="doc-shot">
+            <svg class="fw-diagram" viewBox="0 0 384 192" xmlns="http://www.w3.org/2000/svg">
+              <rect width="384" height="192" rx="4" fill="#050403" />
+              <g fill="none" stroke="#e6efff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M74 48h44l22 22v66a6 6 0 0 1-6 6H74a6 6 0 0 1-6-6V54a6 6 0 0 1 6-6z" />
+                <path d="M118 48v22h22" />
+                <path d="M170 96h42" />
+                <path d="M200 82l14 14-14 14" />
+                <rect x="238" y="62" width="104" height="68" rx="10" />
+              </g>
+              <circle cx="326" cy="96" r="4" fill="#e6efff" />
+              <text x="105" y="112" fill="#e6efff" font-family="'JetBrains Mono', monospace" font-size="18" font-weight="600" text-anchor="middle">.uf2</text>
+              <text x="282" y="101" fill="#e6efff" font-family="'JetBrains Mono', monospace" font-size="15" text-anchor="middle">MW-GCS</text>
+            </svg>
+          </span>
+          <div class="doc-step-body">
+            <p class="doc-chapter-eyebrow">Step 4</p>
+            <h3 class="doc-h3">Drop the .uf2 onto the drive</h3>
+            <p>In your file explorer, drag the downloaded <code>.uf2</code> onto the device's drive. It flashes, then reboots into the new firmware on its own.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="doc-callout doc-danger">
+        <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.86 2h8.28L22 7.86v8.28L16.14 22H7.86L2 16.14V7.86z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>
+        <div class="doc-callout-body">
+          <span class="doc-callout-tag">Danger</span>
+          <p>Do not unplug the device while firmware is writing. The device has no battery, so keep it on USB power until it reboots on its own.</p>
+        </div>
+      </aside>
+
+      <aside class="doc-callout doc-note">
+        <svg class="doc-callout-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" /></svg>
+        <div class="doc-callout-body">
+          <span class="doc-callout-tag">Note</span>
+          <p>To check the installed version, open <em>Settings</em>, then <em>About</em>, which lists the firmware version and build date. See the <a href="docs.html#settings">User Guide</a> for the full Settings reference.</p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ─── Releases ────────────────────────────────────────────────── -->
+    <section class="doc-chapter" id="releases">
+      <p class="doc-chapter-eyebrow">History</p>
+      <h2 class="doc-h2">Releases</h2>
+      <p>Every published build. The newest is the recommended download above.</p>
+
+      <!-- Add older releases as more .fw-release rows (newest first). -->
+      <div class="fw-releases">
+        <div class="fw-release">
+          <div>
+            <div class="fw-release-head">
+              <span class="fw-release-ver">v1.0.0</span>
+              <span class="fw-release-tag">Latest</span>
+            </div>
+            <div class="fw-release-meta">2026-05-31 · UF2 · 254 KB</div>
+            <div class="fw-release-notes">Initial public release.</div>
+          </div>
+          <a class="fw-btn-sm fw-release-dl" href="firmware/missionweaver-gs-1.0.0.uf2" download>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
+            </svg>
+            .uf2
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ─── Footer ────────────────────────────────────────────────────── -->
+  <footer class="pp-footer">
+    <div class="pp-footer-fine">
+      MissionWeaver GCS · RFD C2 · v1.0 · Firmware v1.0.0. © MissionWeaver.
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Version dropdown: open/close, close on outside click / Escape / selection.
+  (function () {
+    var root = document.getElementById('fw-dl');
+    var toggle = document.getElementById('fw-dl-toggle');
+    var menu = document.getElementById('fw-menu');
+    if (!root || !toggle || !menu) return;
+    function open() { menu.hidden = false; toggle.setAttribute('aria-expanded', 'true'); }
+    function close() { menu.hidden = true; toggle.setAttribute('aria-expanded', 'false'); }
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      menu.hidden ? open() : close();
+    });
+    document.addEventListener('click', function (e) { if (!root.contains(e.target)) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    menu.addEventListener('click', close);
+  })();
+</script>
+
+<!-- Shared top bar + working cart (same stack as index.html / docs.html).
+     Served over HTTP: Babel fetches the .jsx files, so file:// won't load the nav. -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script type="text/babel" src="icons.jsx"></script>
+<script type="text/babel" src="shop.jsx"></script>
+<script type="text/babel" src="site-nav.jsx"></script>
+</body>
+</html>

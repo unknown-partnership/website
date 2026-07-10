@@ -1,5 +1,7 @@
 /* Anchor jumps land below the fixed navbar, and glide instead of snap. */
 html { scroll-behavior: smooth; }
+/* Shared nav (site-nav.jsx): mark the current page's link. */
+.pp-nav-links a[aria-current="page"] { color: #2a251f; font-weight: 500; }
 /* styles.css sets overflow-x:hidden on html AND body. `hidden` on body turns
    it into a scroll container that never actually scrolls, which defeats
    position:sticky on the chapter rail (it pins to body instead of the
